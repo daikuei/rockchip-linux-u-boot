@@ -2735,7 +2735,7 @@ static int fsg_bind(struct usb_configuration *c, struct usb_function *f)
 		}
 	}
 
-	if (gadget_is_superspeed(gadget)) {
+	if (gadget_is_superspeed(gadget) && IS_RKUSB_UMS_DNL(c->cdev->driver->name)) {
 		/* Assume endpoint addresses are the same as full speed */
 		fsg_ss_bulk_in_desc.bEndpointAddress =
 			fsg_fs_bulk_in_desc.bEndpointAddress;
@@ -2743,9 +2743,7 @@ static int fsg_bind(struct usb_configuration *c, struct usb_function *f)
 			fsg_fs_bulk_out_desc.bEndpointAddress;
 
 #ifdef CONFIG_CMD_ROCKUSB
-		if (IS_RKUSB_UMS_DNL(c->cdev->driver->name))
-			f->ss_descriptors =
-				usb_copy_descriptors(rkusb_ss_function);
+		f->ss_descriptors = usb_copy_descriptors(rkusb_ss_function);
 #endif
 
 		if (unlikely(!f->ss_descriptors)) {
