@@ -1218,6 +1218,7 @@ static int image_load(img_t img, struct andr_img_hdr *hdr,
 	ulong extra = 0;
 	ulong length;
 	void *buffer;
+	void *tmp = NULL;
 	int ret = 0;
 
 	switch (img) {
@@ -1366,7 +1367,7 @@ static int image_load(img_t img, struct andr_img_hdr *hdr,
 			 ALIGN(hdr->ramdisk_size, pgsz);
 		length = hdr->second_size;
 		blkcnt = DIV_ROUND_UP(hdr->second_size, blksz);
-		buffer = malloc(blkcnt * blksz);
+		buffer = tmp = malloc(blkcnt * blksz);
 		typesz = sizeof(hdr->second_size);
 		break;
 	case IMG_RECOVERY_DTBO:
@@ -1376,7 +1377,7 @@ static int image_load(img_t img, struct andr_img_hdr *hdr,
 			 ALIGN(hdr->second_size, pgsz);
 		length = hdr->recovery_dtbo_size;
 		blkcnt = DIV_ROUND_UP(hdr->recovery_dtbo_size, blksz);
-		buffer = malloc(blkcnt * blksz);
+		buffer = tmp = malloc(blkcnt * blksz);
 		typesz = sizeof(hdr->recovery_dtbo_size);
 		break;
 	case IMG_DTB:
@@ -1387,7 +1388,7 @@ static int image_load(img_t img, struct andr_img_hdr *hdr,
 			 ALIGN(hdr->recovery_dtbo_size, pgsz);
 		length = hdr->dtb_size;
 		blkcnt = DIV_ROUND_UP(hdr->dtb_size, blksz);
-		buffer = malloc(blkcnt * blksz);
+		buffer = tmp = malloc(blkcnt * blksz);
 		typesz = sizeof(hdr->dtb_size);
 		break;
 	case IMG_RK_DTB:
@@ -1443,6 +1444,9 @@ crypto_calc:
 #endif
 #endif
 	}
+
+	if (tmp)
+		free(tmp);
 
 	return 0;
 }
