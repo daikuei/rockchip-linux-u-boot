@@ -293,33 +293,12 @@ static unsigned long get_append(char *text)
 	}
 
 	if (append_len) {
-		int len = 0;
-		char *append;
+		char *append = (char*)calloc(append_len, sizeof(char));
 
-		char *bootargs = env_get("bootargs");
-		if (bootargs)
-			len += strlen(bootargs);
-
-		append = (char*)calloc(append_len, sizeof(char));
 		memcpy(append, text, append_len);
-
-		len += append_len;
-
-		char *newbootargs = malloc(len + 2);
-		*newbootargs = '\0';
-
-		if (bootargs) {
-			strcpy(newbootargs, bootargs);
-			strcat(newbootargs, " ");
-		}
-
-		strcat(newbootargs, append);
 		printf("get append cmdline: %s\n", append);
-
-		env_set("bootargs", newbootargs);
-
+		env_update("bootargs", append);
 		free(append);
-		free(newbootargs);
 	}
 
 	return i;
