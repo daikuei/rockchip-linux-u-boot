@@ -293,8 +293,9 @@ static unsigned long get_append(char *text)
 	}
 
 	if (append_len) {
-		char *append = (char*)calloc(append_len, sizeof(char));
+		char *append = (char*)calloc(append_len + 1, sizeof(char));
 
+		append[append_len] = 0x00;
 		memcpy(append, text, append_len);
 		printf("get append cmdline: %s\n", append);
 		env_update("bootargs", append);
