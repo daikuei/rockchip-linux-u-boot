@@ -205,6 +205,10 @@ int rockchip_get_boot_mode(void)
 			printf("boot mode: watchdog\n");
 			boot_mode[PL] = BOOT_MODE_WATCHDOG;
 			break;
+		case BOOT_QUIESCENT:
+			printf("boot mode: quiescent\n");
+			boot_mode[PL] = BOOT_MODE_QUIESCENT;
+			break;
 		default:
 			reg_soc_status3 = readl((void *)CONFIG_GRF_SOC_STATUS3_REG);
 			if (reg_soc_status3 & (1 << 12)) {
