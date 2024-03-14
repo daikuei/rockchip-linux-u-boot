@@ -425,21 +425,38 @@ static void parse_cmdline(void)
 	fs_argv[1] = "mmc";
 
 	if (!strcmp(devnum, "0"))
-		fs_argv[2] = "0:7";
+		fs_argv[2] = "0:9";
 	else if (!strcmp(devnum, "1"))
-		fs_argv[2] = "1:7";
+		fs_argv[2] = "1:9";
 	else {
 		printf("Invalid devnum\n");
 		goto end;
 	}
 
 	fs_argv[3] = file_addr;
-	fs_argv[4] = "cmdline.txt";
+	fs_argv[4] = "overlay-boot/upper/cmdline.txt";
 
 	if (do_ext2load(NULL, 0, 5, fs_argv)) {
-		printf("[cmdline] do_ext2load fail\n");
-		goto end;
-	}
+		printf("[cmdline] do_ext2load fail from /data/overlay-boot/upper/cmdline.txt\n");
+		if (!strcmp(devnum, "0"))
+			fs_argv[2] = "0:7";
+		else if (!strcmp(devnum, "1"))
+			fs_argv[2] = "1:7";
+		else {
+			printf("Invalid devnum\n");
+			goto end;
+		}
+
+		fs_argv[3] = file_addr;
+		fs_argv[4] = "cmdline.txt";
+
+		if (do_ext2load(NULL, 0, 5, fs_argv)) {
+			printf("[cmdline] do_ext2load fail from /boot/cmdline.txt\n");
+			goto end;
+		} else
+			printf("[cmdline] do_ext2load pass from /boot/cmdline.txt\n");
+	} else
+		printf("[cmdline] do_ext2load pass from /data/overlay-boot/upper/cmdline.txt\n");
 
 	size = env_get_ulong("filesize", 16, 0);
 	if (!size) {
@@ -504,21 +521,37 @@ static void parse_hw_config(struct hw_config *hw_conf)
 	fs_argv[1] = "mmc";
 
 	if (!strcmp(devnum, "0"))
-		fs_argv[2] = "0:7";
+		fs_argv[2] = "0:9";
 	else if (!strcmp(devnum, "1"))
-		fs_argv[2] = "1:7";
+		fs_argv[2] = "1:9";
 	else {
 		printf("Invalid devnum\n");
 		goto end;
 	}
 
 	fs_argv[3] = file_addr;
-	fs_argv[4] = "config.txt";
+	fs_argv[4] = "overlay-boot/upper/config.txt";
 
 	if (do_ext2load(NULL, 0, 5, fs_argv)) {
-		printf("[conf] do_ext2load fail\n");
-		goto end;
-	}
+		printf("[conf] do_ext2load fail from /data/overlay-boot/upper/config.txt\n");
+		if (!strcmp(devnum, "0"))
+			fs_argv[2] = "0:7";
+		else if (!strcmp(devnum, "1"))
+		fs_argv[2] = "1:7";
+		else {
+			printf("Invalid devnum\n");
+			goto end;
+		}
+
+		fs_argv[3] = file_addr;
+		fs_argv[4] = "config.txt";
+		if (do_ext2load(NULL, 0, 5, fs_argv)) {
+			printf("[conf] do_ext2load fail from /boot/config.txt\n");
+			goto end;
+		} else
+			printf("[conf] do_ext2load pass from /boot/config.txt\n");
+	} else
+		printf("[conf] do_ext2load pass from /data/overlay-boot/upper/config.txt\n");
 
 	size = env_get_ulong("filesize", 16, 0);
 	if (!size) {
@@ -749,6 +782,7 @@ static int merge_dts_overlay(cmd_tbl_t *cmdtp, struct fdt_header *working_fdt, c
 	struct fdt_header *blob;
 	int ret;
 	char overlay_file[MAX_OVERLAY_NAME_LENGTH] = "overlays/";
+	char fs_overlay_file[MAX_OVERLAY_NAME_LENGTH] = "overlay-boot/upper/overlays/";
 
 	static char *fs_argv[5];
 
@@ -766,6 +800,8 @@ static int merge_dts_overlay(cmd_tbl_t *cmdtp, struct fdt_header *working_fdt, c
 
 	addr = simple_strtoul(file_addr, NULL, 16);
 
+	strcat(fs_overlay_file, overlay_name);
+	strncat(fs_overlay_file, ".dtbo", 6);
 	strcat(overlay_file, overlay_name);
 	strncat(overlay_file, ".dtbo", 6);
 
@@ -773,21 +809,37 @@ static int merge_dts_overlay(cmd_tbl_t *cmdtp, struct fdt_header *working_fdt, c
 	fs_argv[1] = "mmc";
 
 	if (!strcmp(devnum, "0"))
-		fs_argv[2] = "0:7";
+		fs_argv[2] = "0:9";
 	else if (!strcmp(devnum, "1"))
-		fs_argv[2] = "1:7";
+		fs_argv[2] = "1:9";
 	else {
 		printf("Invalid devnum\n");
 		goto fail;
 	}
 
 	fs_argv[3] = file_addr;
-	fs_argv[4] = overlay_file;
+	fs_argv[4] = fs_overlay_file;
 
 	if (do_ext2load(NULL, 0, 5, fs_argv)) {
-		printf("[merge_dts_overlay] do_ext2load fail\n");
-		goto fail;
-	}
+		printf("[merge_dts_overlay] do_ext2load fail from /data/overlay-boot/upper/overlays\n");
+		if (!strcmp(devnum, "0"))
+			fs_argv[2] = "0:7";
+		else if (!strcmp(devnum, "1"))
+			fs_argv[2] = "1:7";
+		else {
+			printf("Invalid devnum\n");
+			goto fail;
+		}
+
+		fs_argv[3] = file_addr;
+		fs_argv[4] = overlay_file;
+		if (do_ext2load(NULL, 0, 5, fs_argv)) {
+			printf("[merge_dts_overlay] do_ext2load fail from /boot/overlays\n");
+			goto fail;
+		} else
+			printf("[merge_dts_overlay] do_ext2load pass from /boot/overlays\n");
+	} else
+		printf("[merge_dts_overlay] do_ext2load pass from /data/overlay-boot/upper/overlays\n");
 
 	blob = map_sysmem(addr, 0);
 	if (!fdt_valid(&blob)) {
