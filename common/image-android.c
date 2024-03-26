@@ -425,9 +425,9 @@ static void parse_cmdline(void)
 	fs_argv[1] = "mmc";
 
 	if (!strcmp(devnum, "0"))
-		fs_argv[2] = "0:9";
+		fs_argv[2] = "0:10";
 	else if (!strcmp(devnum, "1"))
-		fs_argv[2] = "1:9";
+		fs_argv[2] = "1:10";
 	else {
 		printf("Invalid devnum\n");
 		goto end;
@@ -439,9 +439,9 @@ static void parse_cmdline(void)
 	if (do_ext2load(NULL, 0, 5, fs_argv)) {
 		printf("[cmdline] do_ext2load fail from /data/overlay-boot/upper/cmdline.txt\n");
 		if (!strcmp(devnum, "0"))
-			fs_argv[2] = "0:7";
+			fs_argv[2] = "0:8";
 		else if (!strcmp(devnum, "1"))
-			fs_argv[2] = "1:7";
+			fs_argv[2] = "1:8";
 		else {
 			printf("Invalid devnum\n");
 			goto end;
@@ -521,9 +521,9 @@ static void parse_hw_config(struct hw_config *hw_conf)
 	fs_argv[1] = "mmc";
 
 	if (!strcmp(devnum, "0"))
-		fs_argv[2] = "0:9";
+		fs_argv[2] = "0:10";
 	else if (!strcmp(devnum, "1"))
-		fs_argv[2] = "1:9";
+		fs_argv[2] = "1:10";
 	else {
 		printf("Invalid devnum\n");
 		goto end;
@@ -535,9 +535,9 @@ static void parse_hw_config(struct hw_config *hw_conf)
 	if (do_ext2load(NULL, 0, 5, fs_argv)) {
 		printf("[conf] do_ext2load fail from /data/overlay-boot/upper/config.txt\n");
 		if (!strcmp(devnum, "0"))
-			fs_argv[2] = "0:7";
+			fs_argv[2] = "0:8";
 		else if (!strcmp(devnum, "1"))
-		fs_argv[2] = "1:7";
+		fs_argv[2] = "1:8";
 		else {
 			printf("Invalid devnum\n");
 			goto end;
@@ -809,9 +809,9 @@ static int merge_dts_overlay(cmd_tbl_t *cmdtp, struct fdt_header *working_fdt, c
 	fs_argv[1] = "mmc";
 
 	if (!strcmp(devnum, "0"))
-		fs_argv[2] = "0:9";
+		fs_argv[2] = "0:10";
 	else if (!strcmp(devnum, "1"))
-		fs_argv[2] = "1:9";
+		fs_argv[2] = "1:10";
 	else {
 		printf("Invalid devnum\n");
 		goto fail;
@@ -823,9 +823,9 @@ static int merge_dts_overlay(cmd_tbl_t *cmdtp, struct fdt_header *working_fdt, c
 	if (do_ext2load(NULL, 0, 5, fs_argv)) {
 		printf("[merge_dts_overlay] do_ext2load fail from /data/overlay-boot/upper/overlays\n");
 		if (!strcmp(devnum, "0"))
-			fs_argv[2] = "0:7";
+			fs_argv[2] = "0:8";
 		else if (!strcmp(devnum, "1"))
-			fs_argv[2] = "1:7";
+			fs_argv[2] = "1:8";
 		else {
 			printf("Invalid devnum\n");
 			goto fail;
@@ -1149,8 +1149,8 @@ int android_image_get_kernel(const struct andr_img_hdr *hdr, int verify,
 		len += strlen(cmdline);
 	}
 
-	char *rootmmc1 = "root=/dev/mmcblk1p8"; /* SDcard Boot */
-	char *rootmmc2 = "root=/dev/mmcblk0p8"; /* eMMC Boot */
+	char *rootmmc1 = "root=/dev/mmcblk1p9"; /* SDcard Boot */
+	char *rootmmc2 = "root=/dev/mmcblk0p9"; /* eMMC Boot */
 
 	char *bootargs = env_get("bootargs");
 	if (bootargs)
