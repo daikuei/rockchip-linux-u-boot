@@ -1149,7 +1149,8 @@ int android_image_get_kernel(const struct andr_img_hdr *hdr, int verify,
 		len += strlen(cmdline);
 	}
 
-	char *rootmmc1 = "root=/dev/mmcblk1p9"; /* SDcard Boot */
+	// char *rootmmc1 = "root=/dev/mmcblk1p9"; /* SDcard Boot */
+	char *rootmmc1 = "root=/dev/sda8"; /* SDcard Boot */
 	char *rootmmc2 = "root=/dev/mmcblk0p9"; /* eMMC Boot */
 
 	char *bootargs = env_get("bootargs");
